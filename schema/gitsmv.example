@@ -1,0 +1,15 @@
+# .gitsmv — Git Submodule Versioning lock (git-config format)
+# Pair with .gitmodules; do not duplicate url/path/branch here.
+
+[smv]
+	version = 1
+
+[submodule "vendor/libfoo"]
+	version = 2.1.0
+	ref = v2.1.0
+	resolved = a1b2c3d4e5f6789012345678901234567890abcd
+
+[submodule "vendor/libbar"]
+	version = 1.4.2-rc1
+	ref = release/1.4.2
+	resolved = deadbeefdeadbeefdeadbeefdeadbeefdeadbeef

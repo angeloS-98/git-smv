@@ -1,0 +1,48 @@
+.TH GIT-SMV 1 "2026-05-19" "git-smv" "Git Manual"
+.SH NAME
+git-smv \- Git Submodule Versioning
+.SH SYNOPSIS
+.B git smv
+[\-h | \-\-help] [\-\-gitsmv-file <path>] <command> [<args>...]
+.SH DESCRIPTION
+.B git smv
+manages submodule versioning through a lock file \fB.gitsmv\fR at the repository root.
+The lock file uses the same git-config format as \fB.gitmodules\fR but stores only
+versioning metadata: \fBversion\fR, \fBref\fR, and \fBresolved\fR.
+.PP
+\fB.gitmodules\fR remains the source for \fBpath\fR, \fBurl\fR, and \fBbranch\fR.
+.SH COMMANDS
+.TP
+\fBinit\fR
+Create \fB.gitsmv\fR. With \fB\-\-from-gitmodules\fR, populate entries from current submodule state.
+.TP
+\fBadd\fR
+Add a submodule and create a lock entry.
+.TP
+\fBremove\fR
+Remove a submodule and its lock entry.
+.TP
+\fBlock\fR
+Resolve refs and update \fBresolved\fR SHAs in \fB.gitsmv\fR.
+.TP
+\fBsync\fR
+Check out submodules at \fBresolved\fR SHAs from \fB.gitsmv\fR.
+.TP
+\fBbump\fR
+Update \fBref\fR and/or \fBversion\fR for a submodule.
+.TP
+\fBstatus\fR
+Show drift between lock, working tree, and parent gitlink.
+.TP
+\fBdiff\fR
+Compare \fB.gitsmv\fR \fBresolved\fR values with parent gitlinks.
+.SH FILES
+.B .gitsmv
+Lock file (git-config format).
+.SH ENVIRONMENT
+.TP
+.B GITSMV_FILE
+Override path to the lock file.
+.SH "SEE ALSO"
+.BR git-submodule (1)
+.BR gitmodules (5)

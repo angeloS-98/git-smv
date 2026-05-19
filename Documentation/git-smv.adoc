@@ -1,0 +1,61 @@
+git-smv(1)
+==========
+
+NAME
+----
+git-smv - Git Submodule Versioning
+
+SYNOPSIS
+--------
+[verse]
+'git smv' [-h | --help] [--gitsmv-file <path>] <command> [<args>...]
+
+DESCRIPTION
+-----------
+'git smv' manages submodule versioning through a lock file '.gitsmv' at the
+repository root. The lock file uses the same git-config format as '.gitmodules'
+but stores only versioning metadata: 'version', 'ref', and 'resolved'.
+
+'.gitmodules' remains the source for 'path', 'url', and 'branch'. '.gitsmv'
+declares which version and Git ref each submodule should use.
+
+COMMANDS
+--------
+*init*::
+	Create '.gitsmv'. With '--from-gitmodules', populate entries from
+	current submodule state.
+
+*add*::
+	Add a submodule and create a lock entry.
+
+*remove*::
+	Remove a submodule and its lock entry.
+
+*lock*::
+	Resolve refs and update 'resolved' SHAs in '.gitsmv'.
+
+*sync*::
+	Check out submodules at 'resolved' SHAs from '.gitsmv'.
+
+*bump*::
+	Update 'ref' and/or 'version' for a submodule.
+
+*status*::
+	Show drift between lock, working tree, and parent gitlink.
+
+*diff*::
+	Compare '.gitsmv' 'resolved' values with parent gitlinks.
+
+FILES
+-----
+'.gitsmv'::
+	Lock file (git-config format).
+
+ENVIRONMENT
+-----------
+'GITSMV_FILE'::
+	Override path to the lock file.
+
+GIT
+---
+Part of the git-smv project. See README.md for installation.

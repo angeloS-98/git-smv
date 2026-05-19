@@ -1,0 +1,23 @@
+Installation requirements
+=========================
+
+* Git 2.20 or newer (with git-sh-setup in $(git --exec-path))
+* POSIX shell (/bin/sh)
+* prove (Perl Test::Harness) for running tests — optional
+
+Quick install
+-------------
+
+    make install PREFIX=~/.local
+
+This installs `git-smv` into `$(PREFIX)/bin` and libraries into
+`$(PREFIX)/share/git-smv/lib/` (required at runtime).
+
+Ensure ~/.local/bin is on your PATH, then:
+
+    git smv help
+    git help smv
+
+System-wide exec-path install (optional, may require root):
+
+    make install-exec

@@ -1,0 +1,106 @@
+#!/bin/sh
+# Git Submodule Versioning — git smv
+# Copyright (c) 2026 — MIT License
+
+_bindir=$(CDPATH= cd "$(dirname "$0")" && pwd)
+if test -f "$_bindir/lib/smv-lib-root.sh"; then
+	# shellcheck source=lib/smv-lib-root.sh
+	. "$_bindir/lib/smv-lib-root.sh"
+elif test -f "$_bindir/../share/git-smv/lib/smv-lib-root.sh"; then
+	# shellcheck source=/dev/null
+	. "$_bindir/../share/git-smv/lib/smv-lib-root.sh"
+else
+	echo "git-smv: cannot find lib/smv-lib-root.sh (run 'make install')" >&2
+	exit 2
+fi
+smv_resolve_lib_root || exit 2
+
+# Allow help without a repository; commands call require_work_tree as needed.
+NONGIT_OK=Yes
+SUBDIRECTORY_OK=Yes
+
+. "$SMV_LIB_ROOT/lib/git-sh-setup.sh"
+. "$SMV_LIB_ROOT/lib/common.sh"
+. "$SMV_LIB_ROOT/lib/lockfile.sh"
+. "$SMV_LIB_ROOT/lib/gitmodules.sh"
+. "$SMV_LIB_ROOT/lib/checks.sh"
+
+USAGE='[-h | --help] [--gitsmv-file <path>] [--force] [--strict] [--dry-run]
+       <command> [<args>...]
+
+Git Submodule Versioning (.gitsmv lock file).
+
+Commands:
+   init      Create .gitsmv
+   add       Add submodule and lock entry
+   remove    Remove submodule and lock entry
+   lock      Resolve refs and update resolved SHAs
+   sync      Checkout submodules to resolved SHAs
+   bump      Update ref/version for a submodule
+   status    Show lock vs working tree vs index drift
+   diff      Compare .gitsmv resolved vs parent gitlink
+   help      Show help
+
+Run '"$(basename "$0")"' help <command> for command-specific help.'
+
+# Global flags before subcommand
+while test $# -gt 0; do
+	case $1 in
+	--gitsmv-file)
+		shift
+		test $# -gt 0 || die "option --gitsmv-file requires a value"
+		GITSMV_FILE=$1
+		shift
+		;;
+	--gitsmv-file=*)
+		GITSMV_FILE=${1#--gitsmv-file=}
+		shift
+		;;
+	--force|-f)
+		SMV_FORCE=1
+		shift
+		;;
+	--strict)
+		SMV_STRICT=1
+		shift
+		;;
+	--dry-run|-n)
+		SMV_DRY_RUN=1
+		shift
+		;;
+	--allow-partial)
+		SMV_ALLOW_PARTIAL=1
+		shift
+		;;
+	-h|--help)
+		shift
+		set -- help "$@"
+		break
+		;;
+	-*)
+		die "unknown option: $1"
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+cmd=${1:-help}
+case $cmd in
+help)
+	;;
+*)
+	run_global_checks
+	;;
+esac
+
+shift || true
+
+command_path="$SMV_LIB_ROOT/lib/commands/${cmd}.sh"
+if test -f "$command_path"; then
+	# shellcheck source=/dev/null
+	. "$command_path"
+else
+	die "unknown subcommand: $cmd"
+fi
