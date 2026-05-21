@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cmd_diff() {
 require_work_tree
 cd_to_toplevel
 smv_ensure_gitsmv_file
@@ -49,4 +50,5 @@ for path in $(gm_list_paths); do
 	fi
 done
 
-exit $diff_found
+return $diff_found
+}

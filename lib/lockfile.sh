@@ -90,6 +90,8 @@ smv_lock_validate() {
 		fi
 
 		for key in $SMV_FORBIDDEN_KEYS; do
+			echo "DEBUG ENV FOR $path $key:" >&2
+			env | grep GIT >&2
 			val=$(git config -f "$file" --get "$(smv_config_key "$path" "$key")" 2>/dev/null) || true
 			if test -n "${val:-}"; then
 				msg="submodule '$path' must not set $key in .gitsmv (use .gitmodules)"

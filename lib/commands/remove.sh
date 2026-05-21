@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cmd_remove() {
 require_work_tree
 cd_to_toplevel
 smv_ensure_gitsmv_file
@@ -42,4 +43,5 @@ else
 	git config -f "$(gm_gitmodules_file)" --remove-section "submodule.$path" 2>/dev/null || true
 fi
 
-echo "removed submodule $path"
+smv_log_ok "removed submodule $path"
+}

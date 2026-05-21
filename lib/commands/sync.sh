@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cmd_sync() {
 require_work_tree
 cd_to_toplevel
 smv_ensure_gitsmv_file
@@ -62,7 +63,7 @@ for path in $PATHS; do
 	test -n "$resolved" || die "submodule '$path' missing resolved (run 'git smv lock')"
 
 	if test -n "${SMV_DRY_RUN:-}"; then
-		echo "would sync $path -> $(smv_short_sha "$resolved")"
+		smv_log_info "would sync $path -> $(smv_short_sha "$resolved")"
 		continue
 	fi
 
@@ -71,5 +72,6 @@ for path in $PATHS; do
 	git -C "$dir" checkout --detach "$resolved" ||
 		die "checkout failed for $path at $resolved"
 
-	echo "synced $path -> $(smv_short_sha "$resolved")"
+	smv_log_ok "synced $path -> $(smv_short_sha "$resolved")"
 done
+}

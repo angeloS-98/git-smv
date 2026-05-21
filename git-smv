@@ -37,6 +37,11 @@ Commands:
    lock      Resolve refs and update resolved SHAs
    sync      Checkout submodules to resolved SHAs
    bump      Update ref/version for a submodule
+   check     Check drift between lock and gitlink
+   install   Initialize and sync submodules
+   upgrade   Fetch and update to latest ref
+   list      Show all tracked submodules
+   purge     Remove local submodule directories
    status    Show lock vs working tree vs index drift
    diff      Compare .gitsmv resolved vs parent gitlink
    help      Show help
@@ -101,6 +106,7 @@ command_path="$SMV_LIB_ROOT/lib/commands/${cmd}.sh"
 if test -f "$command_path"; then
 	# shellcheck source=/dev/null
 	. "$command_path"
+	"cmd_${cmd}" "$@"
 else
 	die "unknown subcommand: $cmd"
 fi

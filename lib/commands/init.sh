@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cmd_init() {
 require_work_tree
 cd_to_toplevel
 smv_ensure_gitsmv_file
@@ -48,4 +49,5 @@ if test -n "$FROM_GITMODULES"; then
 	done
 fi
 
-echo "Created $(smv_lock_path)"
+smv_log_ok "Created $(smv_lock_path)"
+}

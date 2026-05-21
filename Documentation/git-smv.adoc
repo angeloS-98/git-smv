@@ -3,7 +3,7 @@ git-smv(1)
 
 NAME
 ----
-git-smv - Git Submodule Versioning
+git-smv - Version git submodules inside a container repository
 
 SYNOPSIS
 --------
@@ -12,12 +12,12 @@ SYNOPSIS
 
 DESCRIPTION
 -----------
-'git smv' manages submodule versioning through a lock file '.gitsmv' at the
+Manages submodule versioning through a lock file '.gitsmv' at the
 repository root. The lock file uses the same git-config format as '.gitmodules'
 but stores only versioning metadata: 'version', 'ref', and 'resolved'.
 
 '.gitmodules' remains the source for 'path', 'url', and 'branch'. '.gitsmv'
-declares which version and Git ref each submodule should use.
+declares which version and git ref each submodule should use.
 
 COMMANDS
 --------

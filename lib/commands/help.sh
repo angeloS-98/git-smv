@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cmd_help() {
 cmd=${1:-}
 
 case $cmd in
@@ -79,3 +80,4 @@ See: git smv help <command>
 EOF
 	;;
 esac
+}

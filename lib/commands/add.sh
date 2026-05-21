@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cmd_add() {
 require_work_tree
 cd_to_toplevel
 smv_ensure_gitsmv_file
@@ -70,4 +71,5 @@ fi
 sha=$(resolve_ref "$path" "$REF")
 smv_lock_ensure_entry "$path" "$REF" "$VERSION" "$sha"
 
-echo "added $path (ref $REF, version $VERSION, resolved $(smv_short_sha "$sha"))"
+smv_log_ok "added $path (ref $REF, version $VERSION, resolved $(smv_short_sha "$sha"))"
+}

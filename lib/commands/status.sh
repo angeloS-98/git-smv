@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cmd_status() {
 require_work_tree
 cd_to_toplevel
 smv_ensure_gitsmv_file
@@ -19,12 +20,12 @@ done
 
 if ! smv_lock_exists; then
 	warn "no .gitsmv at $(smv_lock_path)"
-	exit 0
+	return 0
 fi
 
 if ! gm_exists; then
 	warn "no .gitmodules"
-	exit 0
+	return 0
 fi
 
 printf '%-30s %-12s %-20s %-12s %-12s %s\n' \
@@ -64,3 +65,4 @@ for path in $(smv_list_paths); do
 		warn "lock entry without .gitmodules: $path"
 	fi
 done
+}

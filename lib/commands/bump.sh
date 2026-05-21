@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cmd_bump() {
 require_work_tree
 cd_to_toplevel
 smv_ensure_gitsmv_file
@@ -76,4 +77,5 @@ git submodule update --init "$path"
 sha=$(resolve_ref "$path" "$REF")
 smv_set "$path" resolved "$sha"
 
-echo "bumped $path -> ref $REF version $VERSION resolved $(smv_short_sha "$sha")"
+smv_log_ok "bumped $path -> ref $REF version $VERSION resolved $(smv_short_sha "$sha")"
+}

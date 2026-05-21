@@ -4,6 +4,13 @@ test_count=0
 test_failures=0
 test_bailout=0
 
+export GIT_AUTHOR_NAME="SMV Test"
+export GIT_AUTHOR_EMAIL="smv@test.example"
+export GIT_COMMITTER_NAME="SMV Test"
+export GIT_COMMITTER_EMAIL="smv@test.example"
+export GIT_ALLOW_PROTOCOL="file"
+export GIT_CONFIG_PARAMETERS="'protocol.file.allow=always'"
+
 test_start_() {
 	test_count=$((test_count + 1))
 	_test_name=$1
@@ -64,4 +71,54 @@ test_create_repo() {
 	git init -q
 	git config user.email "smv@test.example"
 	git config user.name "SMV Test"
+}
+
+test_must_fail() {
+	"$@"
+	_exit=$?
+	if test $_exit -eq 0; then
+		echo "test_must_fail: command succeeded: $*" >&2
+		return 1
+	fi
+	return 0
+}
+
+test_cmp() {
+	diff -u "$1" "$2"
+}
+
+test_path_is_file() {
+	if test ! -f "$1"; then
+		echo "File $1 doesn't exist" >&2
+		return 1
+	fi
+	return 0
+}
+
+test_path_is_dir() {
+	if test ! -d "$1"; then
+		echo "Directory $1 doesn't exist" >&2
+		return 1
+	fi
+	return 0
+}
+
+test_output_contains() {
+	if ! grep -q "$1" "$2"; then
+		echo "Expected '$1' in '$2'" >&2
+		cat "$2" >&2
+		return 1
+	fi
+	return 0
+}
+
+test_create_submodule_upstream() {
+	_name=$1
+	mkdir -p "$_name"
+	git -C "$_name" init -q
+	git -C "$_name" config user.email "s@e"
+	git -C "$_name" config user.name "S"
+	echo one >"$_name/f"
+	git -C "$_name" add f
+	git -C "$_name" commit -qm "c1"
 }

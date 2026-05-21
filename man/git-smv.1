@@ -1,12 +1,12 @@
-.TH GIT-SMV 1 "2026-05-19" "git-smv" "Git Manual"
+.TH GIT-SMV 1 "2026-05-21" "git-smv" "Git Manual"
 .SH NAME
-git-smv \- Git Submodule Versioning
+git-smv \- Version git submodules inside a container repository
 .SH SYNOPSIS
 .B git smv
 [\-h | \-\-help] [\-\-gitsmv-file <path>] <command> [<args>...]
 .SH DESCRIPTION
 .B git smv
-manages submodule versioning through a lock file \fB.gitsmv\fR at the repository root.
+Manages submodule versioning through a lock file \fB.gitsmv\fR at the repository root.
 The lock file uses the same git-config format as \fB.gitmodules\fR but stores only
 versioning metadata: \fBversion\fR, \fBref\fR, and \fBresolved\fR.
 .PP

@@ -1,5 +1,6 @@
 #!/bin/sh
 
+cmd_lock() {
 require_work_tree
 cd_to_toplevel
 smv_ensure_gitsmv_file
@@ -39,5 +40,6 @@ for path in $PATHS; do
 		git submodule update --init "$path"
 	sha=$(resolve_ref "$path" "$ref")
 	smv_set "$path" resolved "$sha"
-	echo "$path: resolved $(smv_short_sha "$sha") (ref $ref)"
+	smv_log_ok "$path: resolved $(smv_short_sha "$sha") (ref $ref)"
 done
+}
