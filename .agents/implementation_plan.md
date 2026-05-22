@@ -10,6 +10,7 @@ e implementazione di cinque nuovi sottocomandi (`check`, `install`, `upgrade`, `
 
 > [!NOTE]
 > Le seguenti scelte sono state concordate tramite l'intervista interattiva:
+>
 > - **Isolamento scope**: Riscrivere ogni comando racchiudendo la logica in una funzione dedicata `cmd_<nome_comando>()` nell'entrypoint per evitare collisioni di variabili.
 > - **Colorazione Log**: Rispetta la configurazione colore nativa di Git (`git config --get-colorbool color.ui`) combinata con `$NO_COLOR`.
 > - **`git smv check`**: Verifica lo sfasamento tra `.gitsmv` (`resolved`) e il gitlink registrato nell'indice di Git. Supporta un flag opzionale `--worktree` per controllare anche lo stato locale.
@@ -20,8 +21,7 @@ e implementazione di cinque nuovi sottocomandi (`check`, `install`, `upgrade`, `
 
 ## Open Questions
 
-> [!IMPORTANT]
-> **Compatibilità POSIX**: Tutti i nuovi script devono girare su `/bin/sh` senza bashismi
+> [!IMPORTANT] > **Compatibilità POSIX**: Tutti i nuovi script devono girare su `/bin/sh` senza bashismi
 > (no array, no `local`, no `[[`, no process substitution `<()`).
 > Il lint con `shellcheck --shell=sh` deve passare senza errori.
 
@@ -36,10 +36,13 @@ Il dispatcher in `git-smv` usa `. "$command_path"` (source) nel processo princip
 #### [MODIFY] [git-smv](file:///home/angelo/agents/cursor/git-smv/git-smv)
 
 Il dispatch viene modificato da:
+
 ```sh
 . "$command_path"
 ```
+
 a:
+
 ```sh
 . "$command_path"
 cmd_${cmd} "$@"
@@ -63,6 +66,7 @@ cmd_lock() {
 ```
 
 File coinvolti:
+
 - `add.sh`, `bump.sh`, `diff.sh`, `help.sh`, `init.sh`, `lock.sh`, `remove.sh`, `status.sh`, `sync.sh`
 
 ---
@@ -75,39 +79,39 @@ Aggiunta di funzioni di logging con colori ANSI che rispettano la configurazione
 
 ```sh
 smv_has_color() {
-	if test -n "$NO_COLOR"; then
-		return 1
-	fi
-	# Controlla color.ui di Git
-	git config --get-colorbool color.ui 2>/dev/null
+  if test -n "$NO_COLOR"; then
+    return 1
+  fi
+  # Controlla color.ui di Git
+  git config --get-colorbool color.ui 2>/dev/null
 }
 
 smv_log_info() {
-	printf '%s\n' "$*"
+  printf '%s\n' "$*"
 }
 
 smv_log_ok() {
-	if smv_has_color; then
-		printf '\033[32mok: %s\033[0m\n' "$*"
-	else
-		printf 'ok: %s\n' "$*"
-	fi
+  if smv_has_color; then
+    printf '\033[32mok: %s\033[0m\n' "$*"
+  else
+    printf 'ok: %s\n' "$*"
+  fi
 }
 
 smv_log_warn() {
-	if smv_has_color; then
-		printf '\033[33mwarning: %s\033[0m\n' "$*" >&2
-	else
-		printf 'warning: %s\n' "$*" >&2
-	fi
+  if smv_has_color; then
+    printf '\033[33mwarning: %s\033[0m\n' "$*" >&2
+  else
+    printf 'warning: %s\n' "$*" >&2
+  fi
 }
 
 smv_log_error() {
-	if smv_has_color; then
-		printf '\033[31merror: %s\033[0m\n' "$*" >&2
-	else
-		printf 'error: %s\n' "$*" >&2
-	fi
+  if smv_has_color; then
+    printf '\033[31merror: %s\033[0m\n' "$*" >&2
+  else
+    printf 'error: %s\n' "$*" >&2
+  fi
 }
 ```
 
@@ -119,39 +123,39 @@ smv_log_error() {
 
 Aggiunte rispetto all'implementazione attuale:
 
-| Funzione | Descrizione |
-|---|---|
-| `test_must_fail` | Asserisce che il comando fallisce (exit != 0) |
-| `test_cmp` | Confronta due file con diff leggibile |
-| `test_path_is_file` | Asserisce l'esistenza di un file |
-| `test_path_is_dir` | Asserisce l'esistenza di una directory |
-| `test_output_contains` | Cerca una stringa nell'output del comando |
-| `test_create_submodule_upstream` | Helper per creare repo upstream fake |
+| Funzione                         | Descrizione                                   |
+| -------------------------------- | --------------------------------------------- |
+| `test_must_fail`                 | Asserisce che il comando fallisce (exit != 0) |
+| `test_cmp`                       | Confronta due file con diff leggibile         |
+| `test_path_is_file`              | Asserisce l'esistenza di un file              |
+| `test_path_is_dir`               | Asserisce l'esistenza di una directory        |
+| `test_output_contains`           | Cerca una stringa nell'output del comando     |
+| `test_create_submodule_upstream` | Helper per creare repo upstream fake          |
 
 ---
 
 #### [NEW] Test per ogni sottocomando esistente
 
-| File | Comandi coperti |
-|---|---|
-| `t/t0001-smv-init.sh` | gia presente — sara esteso |
-| `t/t0002-smv-lock.sh` | `lock --all`, `lock <path>` |
-| `t/t0003-smv-sync.sh` | `sync --all`, `sync --dry-run`, `sync --force` |
-| `t/t0004-smv-bump.sh` | `bump --ref`, `bump --to-latest`, `bump --version` |
-| `t/t0005-smv-add-remove.sh` | `add`, `remove`, `remove --keep-dir` |
-| `t/t0006-smv-diff-status.sh` | `diff`, `diff --porcelain`, `status -v` |
+| File                         | Comandi coperti                                    |
+| ---------------------------- | -------------------------------------------------- |
+| `t/t0001-smv-init.sh`        | gia presente — sara esteso                         |
+| `t/t0002-smv-lock.sh`        | `lock --all`, `lock <path>`                        |
+| `t/t0003-smv-sync.sh`        | `sync --all`, `sync --dry-run`, `sync --force`     |
+| `t/t0004-smv-bump.sh`        | `bump --ref`, `bump --to-latest`, `bump --version` |
+| `t/t0005-smv-add-remove.sh`  | `add`, `remove`, `remove --keep-dir`               |
+| `t/t0006-smv-diff-status.sh` | `diff`, `diff --porcelain`, `status -v`            |
 
 ---
 
 #### [NEW] Test per i nuovi comandi
 
-| File | Comandi coperti |
-|---|---|
-| `t/t0010-smv-check.sh` | `check` (CI gate) |
-| `t/t0011-smv-install.sh` | `install` |
-| `t/t0012-smv-upgrade.sh` | `upgrade` |
-| `t/t0013-smv-list.sh` | `list` |
-| `t/t0014-smv-purge.sh` | `purge` |
+| File                     | Comandi coperti   |
+| ------------------------ | ----------------- |
+| `t/t0010-smv-check.sh`   | `check` (CI gate) |
+| `t/t0011-smv-install.sh` | `install`         |
+| `t/t0012-smv-upgrade.sh` | `upgrade`         |
+| `t/t0013-smv-list.sh`    | `list`            |
+| `t/t0014-smv-purge.sh`   | `purge`           |
 
 ---
 
@@ -162,7 +166,7 @@ Aggiunte rispetto all'implementazione attuale:
 **Scopo**: Verifica che ogni SHA `resolved` in `.gitsmv` corrisponda all'attuale gitlink registrato nell'indice.
 Supporta `--worktree` per verificare lo stato locale del sottomodulo.
 
-```
+```bash
 git smv check [--all] [<path>...] [--porcelain] [-q] [--worktree]
 ```
 
@@ -172,7 +176,7 @@ git smv check [--all] [<path>...] [--porcelain] [-q] [--worktree]
 
 **Scopo**: Onboarding automatico. Se `.gitsmv` non esiste, esegue `git smv init --from-gitmodules` prima di procedere con l'installazione e la sincronizzazione.
 
-```
+```bash
 git smv install [--no-sync]
 ```
 
@@ -182,7 +186,7 @@ git smv install [--no-sync]
 
 **Scopo**: Esegue `git fetch` sul remote del sottomodulo (default `origin` o specificato tramite `--remote`) e aggiorna `resolved` all'ultimo commit del ref configurato.
 
-```
+```bash
 git smv upgrade [--all] [<path>...] [--remote <name>] [--dry-run]
 ```
 
@@ -192,7 +196,7 @@ git smv upgrade [--all] [<path>...] [--remote <name>] [--dry-run]
 
 **Scopo**: Vista tabellare arricchita di tutti i sottomoduli.
 
-```
+```bash
 git smv list [--porcelain] [--check-remote]
 ```
 
@@ -202,7 +206,7 @@ git smv list [--porcelain] [--check-remote]
 
 **Scopo**: Rimuove temporaneamente le directory locali dei sottomoduli senza toccare la configurazione e i file di lock.
 
-```
+```bash
 git smv purge [--all] [<path>...] [--force]
 ```
 
